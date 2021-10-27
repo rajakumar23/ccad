@@ -11,7 +11,7 @@ As of now, following topologies can be built within 6 hours of time. This code h
 4. Topology_4 : 1 Jumphost + 3 Control Host + 1 Kernel Compute + 1 DPDK Compute
 
 Note: Consider this as a prototype, as only part of the code has been shared. To make it work, one has to insert the server details to mysql db
-and make changes to the python script respectively. Also, place the CC installer script & appformix license in config folder
+and make changes to the python script respectively. Also, place the CC installer & appformix license details in config folder.
 
 Resource Details
 ----------------
