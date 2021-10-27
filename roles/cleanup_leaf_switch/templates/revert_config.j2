@@ -1,5 +1,5 @@
-delete groups cc-mule-{{ vlan_cc['native_vlan'] }}
-delete apply-groups cc-mule-{{ vlan_cc['native_vlan'] }}
+delete groups cc-{{ vlan_cc['native_vlan'] }}
+delete apply-groups cc-{{ vlan_cc['native_vlan'] }}
 
 {% for item in jumphost %}
 set interfaces {{ item.switch_port_10g3 }} unit 0 description "CC Automation {{ item.switch_port_10g3 }} to {{ item.switch_10g3 }}"
