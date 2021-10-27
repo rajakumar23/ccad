@@ -12,7 +12,7 @@ import re
 from mysql.connector import connect, Error
 
 # Dictionary to store the keys and values fetched from different tables of 
-# mule database
+# database
 classified_data = {}
 DEFAULT_INPUT_FILE="configs/user_input.yml"
 DEFAULT_OUTPUT_FILE="configs/serverdb.yml"
@@ -37,7 +37,7 @@ def gencfg_exit():
     sys.exit()
 
 #
-# Function to connect to the mule database and return the 
+# Function to connect to the database and return the 
 # db connection object
 #
 def gencfg_database_connect(user_input):
@@ -141,12 +141,12 @@ def get_table_key_list(db_cursor, db_name, table_name, ):
     table_column_str = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='{}' AND TABLE_NAME='{}'"
     get_table_column = table_column_str.format(db_name, table_name)
         
-    # Query mule database
+    # Query database
     db_cursor.execute(get_table_column)
     columns = db_cursor.fetchall()
 
     # print("dbs: {}, Type: {}" .format(dbs, type(dbs)))
-    # Column fetched from mule DB, strip the additional characters and append each 
+    # Column fetched from DB, strip the additional characters and append each 
     # column name  to a list
     for column in columns:
         #print("column: {}, Type: {}" .format(column, type(column)) )
@@ -252,7 +252,7 @@ def gencfg_main_module(param):
     db_connection = gencfg_database_connect(user_input)
     db_cursor = db_connection.cursor()
 
-    # The data from mule database is split in 3 different tables, for CC deployment
+    # The data from database is split in 3 different tables, for CC deployment
     # classifying the raw data and merge the table data w.r.t node type (jumphost, 
     # controlhost, compute, storage, etc.,)
     for table in user_input['mysql_tables']:
@@ -264,16 +264,16 @@ def gencfg_main_module(param):
         db_query = db_format_str.format(table, server_list_str)
         
         # print("db_query: {}" .format(db_query))
-        # Query mule database to dump the rows/values of the selected table 
+        # Query database to dump the rows/values of the selected table 
         db_cursor.execute(db_query)
 
         for db in db_cursor:
             # print("db:{}, Type:{}".format(list(db), type(list(db))))
-            # Rows fetched from mule DB are in tuple format, covert them to list 
+            # Rows fetched from DB are in tuple format, covert them to list 
             # and form a dictionary, row -> key and column -> values
             table_values = list(db)
 
-            # Classify the raw data from mule and store it in a dictionary
+            # Classify the raw data from db and store it in a dictionary
             gencfg_classify_raw_data(table_keys, table_values, user_input)
 
     # Close db connection
