@@ -1,0 +1,17 @@
+  - name: "Step 2 - Add Nodes to the Ironic Inventory"
+    shell: /var/lib/contrail_cloud/scripts/inventory-assign.sh -d
+    async: 3600
+    poll: 0
+    become_user: contrail
+    register: result_inventory_assign
+
+  - name: "Step 2 - Wait for asynchronous job inventory-assign.sh to finish" 
+    async_status:
+      jid: '{{ result_inventory_assign.ansible_job_id }}'
+    register: job_result
+    until: job_result.finished
+    retries: 10
+    delay: 360
+  
+  - name: "Step 2 - Print execution result of inventory-assign.sh"
+    debug: var=result_inventory_assign.stdout_lines

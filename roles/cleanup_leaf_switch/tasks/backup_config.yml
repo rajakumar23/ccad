@@ -1,0 +1,10 @@
+  - name: "Backup current configuration of Junos Device"
+    juniper_junos_config:
+      retrieve: "committed"
+      format: "set"
+      dest: "{{ backup_dir }}/{{ inventory_hostname }}-system-config" 
+    register: facts
+
+  - name: "Print result"
+    debug:
+      var: facts

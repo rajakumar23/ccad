@@ -1,0 +1,29 @@
+# Default directory for scripts
+script_dir: /project/scripts
+
+# Default directory where dynamically generated Contrail Cloud templates are placed
+build_dir: build_files
+
+# Default directory to store the logs
+log_dir: logs
+
+# Default directory to store the config files needed for deployment
+config_dir: configs
+
+# Default directory to store the backup files
+backup_dir: backup
+
+# Default leaf templates directory
+leaf_template: roles/configure_leaf_switch/templates
+
+# Default leaf var directory
+leaf_var_dir: roles/configure_leaf_switch/vars
+
+# Default cc templates directory
+cc_template: roles/generate_cc_templates/templates 
+
+# Default cc templates directory
+cc_template_var_dir: roles/generate_cc_templates/vars
+
+# Default leaf cleanup templates directory
+leaf_cleanup_template: roles/cleanup_leaf_switch/templates

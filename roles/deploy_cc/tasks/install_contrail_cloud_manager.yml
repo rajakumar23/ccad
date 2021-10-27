@@ -1,0 +1,17 @@
+  - name: "Step 1 - Install the Contrail Cloud automation scripts"
+    shell: /var/lib/contrail_cloud/scripts/install_contrail_cloud_manager.sh -d
+    async: 10800
+    poll: 0
+    become: true
+    register: result_install_cc_manager
+
+  - name: "Step 1 - Wait for asynchronous job install_contrail_cloud_manager.sh to finish" 
+    async_status:
+      jid: '{{ result_install_cc_manager.ansible_job_id }}'
+    register: job_result
+    until: job_result.finished
+    retries: 30
+    delay: 360
+  
+  - name: "Step 1 - Print execution result of install_contrail_cloud_manager.sh"
+    debug: var=result_install_cc_manager.stdout_lines

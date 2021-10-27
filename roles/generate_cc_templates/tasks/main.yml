@@ -1,0 +1,53 @@
+---
+# tasks file for servers
+  - name: "Printing Ansible Global Variables"
+    debug: 
+      msg: 
+        - "Host: {{ inventory_hostname }}"
+        - "Username: {{ ansible_user }}"
+        - "Password: {{ ansible_password }}"
+
+  - name: "Render site template for Contrail Cloud Deployment"
+    template:
+      src: "{{ cc_template }}/site.j2"
+      dest: "{{ build_dir }}/site.yml"
+
+  - name: "Render inventory template for Contrail Cloud Deployment"
+    template:
+      src: "{{ cc_template }}/inventory.j2"
+      dest: "{{ build_dir }}/inventory.yml"
+
+  - name: "Render control host nodes template for Contrail Cloud Deployment"
+    template:
+      src: "{{ cc_template }}/control-host-nodes.j2"
+      dest: "{{ build_dir }}/control-host-nodes.yml"
+
+  - name: "Render overcloud nics template for Contrail Cloud Deployment"
+    template:
+      src: "{{ cc_template }}/overcloud-nics.j2"
+      dest: "{{ build_dir }}/overcloud-nics.yml"
+
+  - name: "Render compute node template for Contrail Cloud Deployment"
+    template:
+      src: "{{ cc_template }}/compute-nodes.j2"
+      dest: "{{ build_dir }}/compute-nodes.yml"
+
+  - name: "Render vault data template for Contrail Cloud Deployment"
+    template:
+      src: "{{ cc_template }}/vault-data.j2"
+      dest: "{{ build_dir }}/vault-data.yml"
+
+  - name: "Render storage node template for Contrail Cloud Deployment"
+    template:
+      src: "{{ cc_template }}/storage-nodes.j2"
+      dest: "{{ build_dir }}/storage-nodes.yml"
+  
+  - name: "Create new SSH keys on Ansible control machine"
+    shell: yes '' | ssh-keygen -t rsa -N ''
+    args:
+      creates: /root/.ssh/id_rsa
+
+  - name: "Delete jumphost entry in Known_hosts file, if exist"
+    file:
+      state: absent
+      path: /root/.ssh/known_hosts

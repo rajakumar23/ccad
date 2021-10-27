@@ -1,0 +1,17 @@
+  - name: "Step 3 - Deploy Control Hosts"
+    shell: /var/lib/contrail_cloud/scripts/control-hosts-deploy.sh -d
+    async: 3600
+    poll: 0
+    become_user: contrail
+    register: result_control_hosts
+
+  - name: "Step 3 - Wait for asynchronous job control-hosts-deploy.sh to finish" 
+    async_status:
+      jid: '{{ result_control_hosts.ansible_job_id }}'
+    register: job_result
+    until: job_result.finished
+    retries: 10
+    delay: 360
+  
+  - name: "Step 3 - Print execution result of control-hosts-deploy.sh"
+    debug: var=result_control_hosts.stdout_lines

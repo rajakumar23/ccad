@@ -1,0 +1,26 @@
+---
+# tasks file for jumphost
+  - name: "Printing Ansible Global Variables"
+    debug: 
+      msg: 
+        - "Host: {{ inventory_hostname }}"
+        - "Username: {{ ansible_user }}"
+        - "Password: {{ ansible_password }}"
+
+  - name: "Execute the satellite6cleanup.py to cleanup registrations"
+    shell: /var/lib/contrail_cloud/scripts/satellite6cleanup.py --satellite {{ global_config.cc_satellite }} --user {{ global_config.cc_activation_key }} --satellite_org {{ global_config.cc_organization }}
+    async: 3600
+    poll: 0
+    become: true
+    register: result_cc_cleanup
+
+  - name: "Wait for asynchronous job satellite6cleanup.py to finish" 
+    async_status:
+      jid: '{{ result_cc_cleanup.ansible_job_id }}'
+    register: job_result
+    until: job_result.finished
+    retries: 11
+    delay: 360
+  
+  - name: "Print result of satellite6cleanup.py"
+    debug: var=result_cc_cleanup.stdout_lines

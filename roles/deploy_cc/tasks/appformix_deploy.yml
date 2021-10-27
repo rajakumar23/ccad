@@ -1,0 +1,22 @@
+  - name: "Copy appformix license file to jumphost"
+    copy:
+      src: "{{ config_dir }}/appformix.sig"
+      dest: /var/lib/contrail_cloud/appformix
+
+  - name: "Step 8 - Deploy the Appformix Cluster"
+    shell: /var/lib/contrail_cloud/scripts/appformix-deploy.sh -d
+    async: 7200
+    poll: 0
+    become_user: contrail
+    register: result_appformix_deploy
+
+  - name: "Step 8 - Wait for asynchronous job appformix-deploy.sh to finish" 
+    async_status:
+      jid: '{{ result_appformix_deploy.ansible_job_id }}'
+    register: job_result
+    until: job_result.finished
+    retries: 10
+    delay: 1000
+  
+  - name: "Step 8 - Print execution result of appformix-deploy.sh"
+    debug: var=result_appformix_deploy.stdout_lines

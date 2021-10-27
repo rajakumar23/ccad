@@ -1,0 +1,17 @@
+  - name: "Render delete configuration from Jinja2 template"
+    template:
+      src: "{{ leaf_template }}/delete_config.j2"
+      dest: "{{ build_dir }}/delete_config.conf"
+
+  - name: "Load the rendered delete configuration and commit"
+    juniper_junos_config:
+      src: "{{ build_dir }}/delete_config.conf"
+      logfile: "{{ log_dir }}/ip_fabric_log"
+      timeout: 120
+      ignore_warning: true
+      load: set
+      format: text
+      check_commit_wait: 4
+      check: true
+      commit: true
+    register: response

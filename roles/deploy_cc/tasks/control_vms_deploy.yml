@@ -1,0 +1,17 @@
+  - name: "Step 4 - Create VMs for all Control Roles"
+    shell: /var/lib/contrail_cloud/scripts/control-vms-deploy.sh -d
+    async: 3600
+    poll: 0
+    become_user: contrail
+    register: result_control_vms
+
+  - name: "Step 4 - Wait for asynchronous job control-vms-deploy.sh to finish" 
+    async_status:
+      jid: '{{ result_control_vms.ansible_job_id }}'
+    register: job_result
+    until: job_result.finished
+    retries: 10
+    delay: 360
+  
+  - name: "Step 4 - Print execution result of control-vms-deploy.sh"
+    debug: var=result_control_vms.stdout_lines

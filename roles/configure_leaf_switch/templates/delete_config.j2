@@ -1,0 +1,23 @@
+{% for item in jumphost %}
+delete interfaces {{ item.switch_port_10g3 }}
+{% endfor %}
+
+{% for item in controlhost %}
+delete interfaces {{ item.switch_port_10g3 }}
+{% endfor %}
+
+{% if kernelcompute is defined %}
+{% for item in kernelcompute %}
+delete interfaces {{ item.switch_port_10g3 }}
+{% endfor %}
+{% endif %}
+
+{% if dpdkcompute is defined %}
+{% for item in dpdkcompute %}
+delete interfaces {{ item.switch_port_10g3 }}
+{% if dpdkcompute[0]['dpdk_bond_lacp'] == 'True' %}
+delete interfaces {{ item.switch_bond_slave1 }}
+delete interfaces {{ item.switch_bond_slave2 }}
+{% endif %}
+{% endfor %}
+{% endif %}

@@ -1,0 +1,29 @@
+---
+# tasks file for leaf
+  - name: "Printing Ansible Global Variables"
+    debug: 
+      msg: 
+        - "Host: {{ inventory_hostname }}" 
+        - "Username: {{ ansible_user }}" 
+        - "Password: {{ ansible_password }}" 
+
+  - name: "Checking NETCONF connectivity"
+    wait_for: 
+      host: "{{ inventory_hostname }}" 
+      port: 830
+      timeout: 5 
+  
+  - name: "Get facts" 
+    juniper_junos_facts: 
+      savedir: "{{ log_dir }}"
+    register: junos
+
+  - name: "Print Junos Facts"
+    debug: 
+      var: junos
+
+  - include_tasks: backup_config.yml
+
+  - include_tasks: delete_config.yml
+
+  - include_tasks: set_config.yml

@@ -1,0 +1,35 @@
+# Contrail Cloud Activation Key
+global_config:
+  cc_activation_key: xxxxxxxxxx
+  cc_organization: xxxxxxxxxxx
+  cc_satellite: xxxxxxxxxxxx
+  cc_ha: 'False'
+
+# MySQL user
+mysql_user: xxxx
+
+# MySQL password
+mysql_pass: xxxx
+
+# MySQL Server
+mysql_server: xxxxxx
+
+# MySQL Database Name
+mysql_database: provision
+
+# MySQL Tables
+mysql_tables:
+  - servers
+  - servers_ip
+  - CC13
+  
+# Provide the server name user selected to provision
+jumphost:
+  - server_1
+controlhost:
+  - server_2
+kernelcompute:
+  - server_3
+dpdkcompute:
+  - server_4
+

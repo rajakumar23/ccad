@@ -1,0 +1,8 @@
+[leaf]
+x.x.x.x ansible_ssh_user=root ansible_ssh_pass=xxxx
+
+[localhost]
+127.0.0.1 ansible_ssh_user=root ansible_ssh_pass=xxxx
+
+[jumphost]
+x.x.x.x ansible_ssh_user=root ansible_ssh_pass=xxxx

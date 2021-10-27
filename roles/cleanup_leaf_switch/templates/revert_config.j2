@@ -1,0 +1,39 @@
+delete groups cc-mule-{{ vlan_cc['native_vlan'] }}
+delete apply-groups cc-mule-{{ vlan_cc['native_vlan'] }}
+
+{% for item in jumphost %}
+set interfaces {{ item.switch_port_10g3 }} unit 0 description "CC Automation {{ item.switch_port_10g3 }} to {{ item.switch_10g3 }}"
+set interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members 2233
+set interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching storm-control default
+{% endfor %}
+
+{% for item in controlhost %}
+set interfaces {{ item.switch_port_10g3 }} unit 0 description "CC Automation {{ item.switch_port_10g3 }} to {{ item.switch_10g3 }}"
+set interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members 2233
+set interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching storm-control default
+{% endfor %}
+
+{% if kernelcompute is defined %}
+{% for item in kernelcompute %}
+set interfaces {{ item.switch_port_10g3 }} unit 0 description "CC Automation {{ item.switch_port_10g3 }} to {{ item.switch_10g3 }}"
+set interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members 2233
+set interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching storm-control default
+{% endfor %}
+{% endif %}
+
+{% if dpdkcompute is defined %}
+{% for item in dpdkcompute %}
+set interfaces {{ item.switch_port_10g3 }} unit 0 description "CC Automation {{ item.switch_port_10g3 }} to {{ item.switch_10g3 }}"
+set interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members 2233
+set interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching storm-control default
+{% if dpdkcompute[0]['dpdk_bond_lacp'] == 'True' %}
+set interfaces {{ item.switch_bond_slave1 }} unit 0 description "CC Automation {{ item.switch_bond_slave1 }} to {{ item.switch_10g3 }}"
+set interfaces {{ item.switch_bond_slave1 }} unit 0 family ethernet-switching vlan members 2233
+set interfaces {{ item.switch_bond_slave1 }} unit 0 family ethernet-switching storm-control default
+set interfaces {{ item.switch_bond_slave2 }} unit 0 description "CC Automation {{ item.switch_bond_slave2 }} to {{ item.switch_10g3 }}"
+set interfaces {{ item.switch_bond_slave2 }} unit 0 family ethernet-switching vlan members 2233
+set interfaces {{ item.switch_bond_slave2 }} unit 0 family ethernet-switching storm-control default
+{% endif %}
+{% endfor %}
+{% endif %}
+

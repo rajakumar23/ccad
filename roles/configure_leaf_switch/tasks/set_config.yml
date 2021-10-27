@@ -1,0 +1,21 @@
+  - name: "Render configuration from Jinja2 template and commit"
+    template:
+      src: "{{ leaf_template }}/set_config.j2"
+      dest: "{{ build_dir }}/set_config.conf"
+
+  - name: "Load the rendered configuration and commit"
+    juniper_junos_config:
+      src: "{{ build_dir }}/set_config.conf"
+      logfile: "{{ log_dir }}/ip_fabric_log"
+      timeout: 120
+      ignore_warning: true
+      load: set
+      format: text
+      check_commit_wait: 4
+      check: true
+      commit: true
+    register: response
+
+  - name: "Print the response"
+    debug:
+      var: response

@@ -1,0 +1,104 @@
+---
+# tasks file for jumphost
+  - name: "Printing Ansible Global Variables"
+    debug: 
+      msg: 
+        - "Host: {{ inventory_hostname }}"
+        - "Username: {{ ansible_user }}"
+        - "Password: {{ ansible_password }}"
+
+  - name: "Print the base OS image installed on jumphost"
+    debug:
+      msg: 
+        - "Linux Distribution: {{ hostvars[inventory_hostname].ansible_distribution }}"
+        - "Major Version: {{ hostvars[inventory_hostname].ansible_distribution_major_version }}"
+        - "Minor Version: {{ hostvars[inventory_hostname].ansible_distribution_major_version }}"
+  
+  - name: "Create new SSH keys before performing installation"
+    shell: yes '' | sudo ssh-keygen -t rsa -N ''
+    args:
+      creates: /root/.ssh/id_rsa
+
+  - name: "Create authorized_keys file, if it doesn't exists"
+    file:
+      path: "/root/.ssh/authorized_keys"
+      state: touch
+  
+  - name: "Fetch the public key"
+    command: "cat /root/.ssh/id_rsa.pub"
+    register: pubkey
+
+  - name: "Set authorized key"
+    authorized_key:
+      user: root
+      key: "{{ pubkey.stdout }}"
+      state: present
+  
+  - name: "Copy contrail cloud installer to jumphost"
+    copy:
+      src: "{{ config_dir }}/contrail_cloud_installer.sh_13.5.0.tar"
+      dest: /root
+
+  - name: "Untar the contrail_cloud_installer.sh on the jumphost"
+    ansible.builtin.unarchive:
+      src: /root/contrail_cloud_installer.sh_13.5.0.tar
+      dest: /root
+      remote_src: yes
+  
+  - include_tasks: contrail_cloud_installer.yml
+
+  - name: "Check whether contrail cloud packages are installed or not"
+    shell: yum info contrail_cloud
+    become: true
+
+  - name: "Copy the Contrail Cloud Templates to jumphost"
+    copy:
+      src: "{{ item }}"
+      dest: /var/lib/contrail_cloud/config
+    with_fileglob:
+      - "{{ build_dir }}/*.yml"
+  
+  - name: "Create .vault_password file to use plain-text password"
+    copy:
+      dest: "/var/lib/contrail_cloud/config/.vault_password"
+      content: |
+        c0ntrail123
+
+  - name: "Encrypt vault data"
+    shell: ansible-vault encrypt /var/lib/contrail_cloud/config/vault-data.yml --vault-password-file /var/lib/contrail_cloud/config/.vault_password
+    become: true
+
+  - name: "Change mode of vault-data.yml"
+    shell: chmod 0644 /var/lib/contrail_cloud/config/vault-data.yml
+    become: true
+
+  - name: "Change Owner of .vault_password to contrail"
+    shell: chown contrail /var/lib/contrail_cloud/config/.vault_password
+    become: true
+  
+  - name: "Change mode of .vault_password to 0400"
+    shell: chmod 0400 /var/lib/contrail_cloud/config/.vault_password
+    become: true
+
+  - name: "Verify - establish an SSH connection without specifying a password"
+    shell: ssh -o StrictHostKeyChecking=no localhost true
+    become: true
+  
+  - include_tasks: install_contrail_cloud_manager.yml
+
+  - include_tasks: inventory_assign.yml
+
+  - include_tasks: control_hosts_deploy.yml
+
+  - include_tasks: control_vms_deploy.yml
+
+  - include_tasks: compute_nodes_assign.yml
+
+  - include_tasks: storage_nodes_assign.yml
+
+  - include_tasks: openstack_deploy.yml
+
+  - include_tasks: appformix_deploy.yml
+
+  # In CC13.5 contrail command will not get installed successfully
+  #- include_tasks: install_contrail_command.yml

@@ -1,0 +1,60 @@
+---
+  - name: Cleanup logs and build file directories
+    hosts: all
+    connection: local
+    gather_facts: no
+
+    pre_tasks:
+    - name: Delete log file structure
+      file:
+        path: "{{ log_dir }}"
+        state: absent
+      run_once: true
+
+    - name: Create log file structure
+      file:
+        path: "{{ log_dir }}"
+        state: directory
+        mode: 0777
+      run_once: true
+
+    - name: Delete Build file structure
+      file:
+        path: "{{ build_dir }}"
+        state: absent
+      run_once: true
+
+    - name: Create build file structure
+      file:
+        path: "{{ build_dir }}"
+        state: directory
+        mode: 0777
+      run_once: true
+    
+    - name: "Execute python script to connect to mule DB and dump information w.r.t. user selected servers"
+      local_action: command python "{{ script_dir }}"/gencfg.py
+    
+  - name: Provision Leaf Switch
+    hosts: leaf
+    roles:
+      - configure_leaf_switch
+    connection: local
+    gather_facts: no
+    vars_files:
+      - "{{ config_dir }}/serverdb.yml"
+
+  - name: Generate Contrail Cloud Templates
+    hosts: localhost
+    roles:
+      - generate_cc_templates
+    connection: local
+    gather_facts: no
+    vars_files:
+      - "{{ config_dir }}/serverdb.yml"
+
+  - name: Kick start contrail cloud deployment
+    hosts: jumphost
+    roles:
+      - deploy_cc
+    vars_files:
+      - "{{ config_dir }}/serverdb.yml"

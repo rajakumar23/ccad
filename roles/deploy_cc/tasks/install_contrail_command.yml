@@ -1,0 +1,17 @@
+  - name: "Step 9 - Deploy the Contrail Command Web UI"
+    shell: /var/lib/contrail_cloud/scripts/install_contrail_command.sh -d
+    async: 12000
+    poll: 0
+    become_user: contrail
+    register: result_contrail_command
+
+  - name: "Step 9 - Wait for asynchronous job install_contrail_command.sh to finish" 
+    async_status:
+      jid: '{{ result_contrail_command.ansible_job_id }}'
+    register: job_result
+    until: job_result.finished
+    retries: 13
+    delay: 1000
+  
+  - name: "Step 9 - Print execution result of install_contrail_command.sh"
+    debug: var=result_contrail_command.stdout_lines

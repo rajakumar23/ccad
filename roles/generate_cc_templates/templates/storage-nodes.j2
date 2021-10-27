@@ -1,0 +1,30 @@
+# Copyright 2018 Juniper Networks, Inc. All rights reserved.
+# Licensed under the Juniper Networks Script Software License (the "License").
+# You may not use this script file except in compliance with the License, which is located at
+# http://www.juniper.net/support/legal/scriptlicense/
+# Unless required by applicable law or otherwise agreed to in writing by the parties,
+# software distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+# List of nodes to use as storage host role
+# List item contains:
+#    name: name of a node in the inventory (string)
+#    profile: name of hardware profile, group of servers (optional, string)
+#    leaf: leaf name (optional, string)
+# storage_nodes:
+  # - name: storage-1
+  #   leaf: '0'
+  #   profile: 'Hw1'
+{#
+{% set storage_count = namespace(value=0) %}
+
+# List of nodes to use as storage host role
+
+{% for item in storage %}
+storage_nodes:
+  - name: "{{ 'storage' + storage_count.value|string }}"
+    {% set storage_count.value =  storage_count.value + 1 -%}
+    # leaf: '0'
+    # profile: 'Hw0'
+{% endfor %}
+#}

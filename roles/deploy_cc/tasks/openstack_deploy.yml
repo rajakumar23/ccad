@@ -1,0 +1,17 @@
+  - name: "Step 7 - Deploy the Openstack Cluster"
+    shell: /var/lib/contrail_cloud/scripts/openstack-deploy.sh -d
+    async: 12000
+    poll: 0
+    become_user: contrail
+    register: result_openstack_deploy
+
+  - name: "Step 7 - Wait for asynchronous job openstack-deploy.sh to finish" 
+    async_status:
+      jid: '{{ result_openstack_deploy.ansible_job_id }}'
+    register: job_result
+    until: job_result.finished
+    retries: 13
+    delay: 1000
+  
+  - name: "Step 7 - Print execution result of openstack-deploy.sh"
+    debug: var=result_openstack_deploy.stdout_lines

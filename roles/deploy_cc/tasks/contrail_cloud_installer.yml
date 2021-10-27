@@ -1,0 +1,17 @@
+  - name: "Execute the contrail_cloud_installer.sh script to install CC packages"
+    shell: /root/contrail_cloud_installer.sh --satellite_host {{ global_config.cc_satellite }} --satellite_key {{ global_config.cc_activation_key }} --satellite_org {{ global_config.cc_organization }}
+    async: 3600
+    poll: 0
+    become: true
+    register: result_cc_installer
+
+  - name: "Wait for asynchronous job contrail_cloud_installer.sh to finish" 
+    async_status:
+      jid: '{{ result_cc_installer.ansible_job_id }}'
+    register: job_result
+    until: job_result.finished
+    retries: 11
+    delay: 360
+  
+  - name: "Print result of contrail_cloud_installer.sh"
+    debug: var=result_cc_installer.stdout_lines

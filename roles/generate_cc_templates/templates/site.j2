@@ -1,0 +1,284 @@
+global:
+  # List of DNS nameservers
+  dns:
+    - "10.219.2.101"
+    - "10.219.2.102"
+    - "8.8.8.8"
+  # List of NTP time servers 
+  ntp:
+    # public pool.ntp.org
+    - "10.219.0.35"
+    - "10.219.0.36"
+  # Timezone for all servers
+  timezone: 'Europe/Amsterdam'
+  rhel:
+    # Contrail Cloud Activation Key
+    # These details are provided when you request an activation key from
+    # contrail cloud subscriptions <contrail_cloud_subscriptions@juniper.net>
+    #
+    satellite:
+      #SATELLITE_KEY should be defined in vault-data.yml file
+      #SATELLITE_ORG
+      organization: "{{ global_config['cc_organization'] }}"
+      #SATELLITE_FQDN
+      fqdn: {{ global_config['cc_satellite'] }}
+  # DNS domain information. 
+  # Must be unique for every deployment to avoid name conflicts.
+  # Need not be a registered DNS domain.
+  domain: "cc-mule-{{ vlan_cc['native_vlan'] }}.juniper.net"
+  service_user:
+    use_ssh_key_in_overcloud: true
+    
+jumphost:
+  network:
+    # network used for provisioning (PXE booting) servers
+    provision:
+      # jumphost nic to be used for provisioning (PXE booting) servers
+      bridge: br-provision
+      ip: "{{ '192.168.' + vlan_cc['native_vlan']|string + '.' + '2' }}"
+      prefix: 24
+      nic: {{ jumphost[0]['int10g2'] }}
+
+control_hosts:
+  vm:
+    control:
+      disk:
+        vda:
+          pool: hdd_storage
+    contrail-controller:
+      disk:
+        vda:
+          pool: hdd_storage
+    contrail-analytics:
+      disk:
+        vda:
+          pool: hdd_storage
+    contrail-analytics-database:
+      disk:
+        vda:
+          pool: hdd_storage
+        vdb:
+          pool: hdd_storage 
+        vdc:
+          pool: hdd_storage
+    appformix-controller:
+      disk:
+        vda:
+          pool: hdd_storage
+  storage:
+    hdd_storage:
+      type: dir
+      disk:
+        - "/dev/sda"
+        #- "/dev/sdb"
+
+compute_hosts:
+  root_disk:
+    ComputeDpdk:
+      name: "/dev/sda"
+
+undercloud:
+  vm:
+    network:
+      provision:
+        # undercloud VM ip
+        ip: "{{ '192.168.' + vlan_cc['native_vlan']|string + '.' + '1' }}"
+        cidr: "{{ '192.168.' + vlan_cc['native_vlan']|string + '.' + '0/24' }}"
+
+        # undercloud_gateway; set gateway for overcloud nodes in provisioning network. Gateway is the undercloud node itself.
+        gateway: "{{ '192.168.' + vlan_cc['native_vlan']|string + '.' + '1' }}"
+
+        # undercloud_dhcp_start; those IPs will stay in provisioning network on the overcloud nodes for the liftime of the overcloud node
+        dhcp:
+          start: "{{ '192.168.' + vlan_cc['native_vlan']|string + '.' + '50' }}"
+          end: "{{ '192.168.' + vlan_cc['native_vlan']|string + '.' + '200' }}"
+      inspection:
+        # undercloud_inspection_ip_range; those IPs are only used for introspection and will vanish after the introspection is finished
+        ip_range:
+          start: "{{ '192.168.' + vlan_cc['native_vlan']|string + '.' + '201' }}"
+          end: "{{ '192.168.' + vlan_cc['native_vlan']|string + '.' + '250' }}"
+
+overcloud:
+  extra_config:
+    ComputeDpdkParameters:
+      #isolate CPUs from host os
+      #TunedProfileName: "cpu-partitioning"
+      #IsolCpuList: "1-13,17-27,29-41,45-55"
+      #CPUs used for nova guest VMs
+      #NovaVcpuPinSet: ['5-13','17-27','33-41','45-55']
+      #NovaComputeCpuSharedSet: ['0-1','44-45','22-23','66-67']
+      ContrailDpdkOptions: "--vr_mempool_sz 32768 --dpdk_txd_sz 512 --dpdk_rxd_sz 512"
+      ContrailDpdkHugepages2MB: 9196
+      ContrailDpdkHugepages1GB: 150
+      ContrailDpdkDriver: vfio-pci
+    NovaSchedulerDefaultFilters:
+      - RetryFilter
+      - AvailabilityZoneFilter
+      - RamFilter
+      - DiskFilter
+      - ComputeFilter
+      - ComputeCapabilitiesFilter
+      - ImagePropertiesFilter
+      - ServerGroupAntiAffinityFilter
+      - ServerGroupAffinityFilter
+      - AggregateInstanceExtraSpecsFilter
+      - NUMATopologyFilter
+    NovaComputeExtraConfig:
+      nova::cpu_allocation_ratio: 1.0
+      nova::ram_allocation_ratio: 1.0
+      nova::disk_allocation_ratio: 1.0
+
+  network:
+    control:
+      heat_name: ControlPlane
+      # ControlPlaneSubnetCidr
+      netmask_length: 24
+      gateway: "{{ '192.168.' + vlan_cc['native_vlan']|string + '.' + '1' }}"
+      cidr: "{{ '192.168.' + vlan_cc['native_vlan']|string + '.' + '0/24' }}"
+      #vip_enable: true
+      #vip:
+      # ControlPlaneNetworkMtu
+      mtu: 1500
+      #enabled: true
+    # The external network is used for referencing the overcloud APIs from outside the infrastructure.
+    external:
+      # CIDR (IP/prefix) for the external network subnet
+      # Corresponds to the ExternalIpSubnet heat property
+      cidr: "{{ '10.10.' + vlan_cc['native_vlan']|string + '.' + '0/24' }}"
+      
+      # Default route for the external network 
+      # Corresponds to the ExternalInterfaceDefaultRoute heat property
+      gateway: "{{ '192.168.' + vlan_cc['native_vlan']|string + '.' + '1' }}"
+      # VLAN tag for the external network
+      # Corresponds to the ExternalNetworkVlanID heat property
+      vlan: {{ vlan_cc['external'] }}
+      # Floating virtual IP for the Openstack APIs on the external network
+      # Corresponds to the PublicVirtualFixedIPs heat property
+      vip: "{{ '10.10.' + vlan_cc['native_vlan']|string + '.' + '10' }}"
+      # DHCP pool for the external network
+      # Be sure that the range is large enough to accommodate all nodes in the external network
+      pool:
+        # Range start for the DHCP pool
+        start: "{{ '10.10.' + vlan_cc['native_vlan']|string + '.' + '100' }}"
+        # Range end for the DHCP pool
+        end: "{{ '10.10.' + vlan_cc['native_vlan']|string + '.' + '139' }}"
+      # MTU for external network
+      # Corresponds to the ExternalNetworkMtu heat property
+      mtu: 1500
+      # List of roles that can be on this network
+    # The internal API network is used for control plane signalling and service API calls
+    internal_api:
+      # VLAN tag for the internal API network
+      # Corresponds to the InternalApiNetworkVlanID heat property
+      vlan: {{ vlan_cc['internal'] }}
+      # Corresponds to the InternalApiIpSubnet heat property
+      cidr: "172.16.0.0/24"
+      # Default route for the internal api network
+      # Corresponds to the InternalApiInterfaceDefaultRoute heat property
+      gateway: 172.16.0.1
+      # MTU for internal api network
+      # Corresponds to the InternalApiNetworkMtu heat property
+      mtu: 1500
+      # DHCP pool for the internal api network
+      # Be sure that the range is large enough to accommodate all nodes in the internal api network
+      pool:
+        # Range start for the DHCP pool
+        start: 172.16.0.100
+        # Range end for the DHCP pool
+        end: 172.16.0.160
+      # Floating virtual IP for the Openstack APIs on the internal api network
+      # Corresponds to the InternalApiVirtualFixedIPs heat property
+      vip: 172.16.0.90
+      # List of roles that can be on this network
+    storage:
+      # Network name used by TripleO Heat Templates
+      heat_name: Storage
+      # VLAN tag for the storage network
+      # Corresponds to the StorageNetworkVlanID heat property
+      vlan: {{ vlan_cc['storage'] }}
+      cidr: "172.19.0.0/24"
+      gateway: 172.19.0.1
+      mtu: 1500
+      pool:
+        start: 172.19.0.100
+        end: 172.19.0.200
+      # List of roles that can be on this network
+    storage_mgmt:
+      # Network name used by TripleO Heat Templates
+      heat_name: StorageMgmt
+      # VLAN tag for the storage management network
+      # Corresponds to the StorageMgmtNetworkVlanID heat property
+      vlan: {{ vlan_cc['storage_mgmt'] }}
+      cidr: "172.20.0.0/24"
+      gateway: 172.20.0.1
+      mtu: 1500
+      pool:
+        start: 172.20.0.100
+        end: 172.20.0.200
+    tenant:
+      # Network name used by TripleO Heat Templates
+      heat_name: Tenant
+      # VLAN tag for the tenant network
+      # Corresponds to the TenantNetworkVlanID heat property
+      vlan: {{ vlan_cc['tenant'] }}
+      cidr: "172.18.0.0/24"
+      gateway: 172.18.0.1
+      vrouter_gateway: 172.18.0.1
+      mtu: 1500
+      pool:
+        start: 172.18.0.100
+        end: 172.18.0.200
+  # Contrail sepcific settings
+  contrail:
+    #aaa_mode: cloud-admin
+    #ssl:
+      # Encrypt sandesh, introspect and XMPP communication
+      #enabled: true
+    vrouter:
+      contrail_settings:
+        ComputeDpdk:
+          LACP_RATE: 1
+        default:
+          ENCAP_PRIORITY: "MPLSoUDP,VXLAN,MPLSoGRE"
+          VXLAN_VN_ID_MODE: "configured"
+          VROUTER_AGENT__FLOWS__thread_count: "4"
+ 
+  # Information used to generate the SSL certificates for the public Openstack service APIs
+  tls:
+    #countryName_default
+    country: "NL"
+    #stateOrProvinceName_default
+    state: "Noord-Holland"
+    #localityName_default
+    city: "Amsterdam"
+    #organizationalUnitName_default
+    organization: "JNPR"
+    #commonName_default - this is typically the external VIP
+    common_name: "{{ '10.10.' + vlan_cc['native_vlan']|string + '.' + '10' }}"
+
+ceph:
+  enabled: false
+
+appformix:
+  # Set to true if you have multiple control hosts which allows Apformix to run in HA mode
+  {% if global_config['cc_ha'] == 'True' -%}
+  enable_ha: true
+  {% elif global_config['cc_ha'] == 'False' -%}
+  enable_ha: false
+  {% endif -%}
+  # Floating virtual IP for the Appformix APIs on the external network, used and required by HA mode.
+  vip: "{{ '10.10.' + vlan_cc['native_vlan']|string + '.' + '11' }}"
+  {% if global_config['cc_ha'] == 'True' -%}
+  keepalived:
+    # Set which interface will be used for vrrp
+    vrrp_interface: vlan{{ vlan_cc['external'] }}
+  {% elif global_config['cc_ha'] == 'False' -%}
+  #keepalived:
+    # Set which interface will be used for vrrp
+    #vrrp_interface: vlan{{ vlan_cc['external'] }}
+  {% endif -%}
+  network_device_monitoring:
+    appformix_install_snmp_dependencies: true
+    appformix_install_jti_dependencies: true
+    appformix_install_ipmi_dependencies: true
+    network_device_discovery_enabled: true
