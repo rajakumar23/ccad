@@ -1,67 +1,67 @@
 {% for item in jumphost %}
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} enable
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} native-vlan-id {{ vlan_cc['native_vlan'] }}
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching interface-mode trunk
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members {{ vlan_cc['native_vlan'] }}
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members external_vlan_{{ vlan_cc['external'] }} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members internal_vlan_{{ vlan_cc['internal'] }} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members storage_vlan_{{ vlan_cc['storage']}} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members storage_mgmt_vlan_{{ vlan_cc['storage_mgmt'] }} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members tenant_vlan_{{ vlan_cc['tenant']}} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching storm-control default
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} enable
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} native-vlan-id {{ vlan_cc['native_vlan'] }}
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching interface-mode trunk
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members {{ vlan_cc['native_vlan'] }}
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members external_vlan_{{ vlan_cc['external'] }} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members internal_vlan_{{ vlan_cc['internal'] }} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members storage_vlan_{{ vlan_cc['storage']}} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members storage_mgmt_vlan_{{ vlan_cc['storage_mgmt'] }} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members tenant_vlan_{{ vlan_cc['tenant']}} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching storm-control default
 {% endfor %}
 
 {% for item in controlhost %}
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} enable
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} native-vlan-id {{ vlan_cc['native_vlan'] }}
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching interface-mode trunk
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members {{ vlan_cc['native_vlan'] }}
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members external_vlan_{{ vlan_cc['external'] }} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members internal_vlan_{{ vlan_cc['internal'] }} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members storage_vlan_{{ vlan_cc['storage']}} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members storage_mgmt_vlan_{{ vlan_cc['storage_mgmt'] }} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members tenant_vlan_{{ vlan_cc['tenant']}} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching storm-control default
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} enable
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} native-vlan-id {{ vlan_cc['native_vlan'] }}
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching interface-mode trunk
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members {{ vlan_cc['native_vlan'] }}
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members external_vlan_{{ vlan_cc['external'] }} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members internal_vlan_{{ vlan_cc['internal'] }} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members storage_vlan_{{ vlan_cc['storage']}} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members storage_mgmt_vlan_{{ vlan_cc['storage_mgmt'] }} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members tenant_vlan_{{ vlan_cc['tenant']}} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching storm-control default
 {% endfor %}
 
 {% if kernelcompute is defined %}
 {% for item in kernelcompute %}
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} enable
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} native-vlan-id {{ vlan_cc['native_vlan'] }}
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching interface-mode trunk
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members {{ vlan_cc['native_vlan'] }}
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members external_vlan_{{ vlan_cc['external'] }} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members internal_vlan_{{ vlan_cc['internal'] }} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members storage_vlan_{{ vlan_cc['storage']}} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members storage_mgmt_vlan_{{ vlan_cc['storage_mgmt'] }} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members tenant_vlan_{{ vlan_cc['tenant']}} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching storm-control default
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} enable
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} native-vlan-id {{ vlan_cc['native_vlan'] }}
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching interface-mode trunk
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members {{ vlan_cc['native_vlan'] }}
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members external_vlan_{{ vlan_cc['external'] }} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members internal_vlan_{{ vlan_cc['internal'] }} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members storage_vlan_{{ vlan_cc['storage']}} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members storage_mgmt_vlan_{{ vlan_cc['storage_mgmt'] }} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members tenant_vlan_{{ vlan_cc['tenant']}} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching storm-control default
 {% endfor %}
 {% endif %}
 
 {% if dpdkcompute is defined %}
 {% for item in dpdkcompute %}
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} enable
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} native-vlan-id {{ vlan_cc['native_vlan'] }}
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching interface-mode trunk
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members {{ vlan_cc['native_vlan'] }}
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members external_vlan_{{ vlan_cc['external'] }} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members internal_vlan_{{ vlan_cc['internal'] }} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members storage_vlan_{{ vlan_cc['storage']}} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members storage_mgmt_vlan_{{ vlan_cc['storage_mgmt'] }} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members tenant_vlan_{{ vlan_cc['tenant']}} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching storm-control default
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} enable
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} native-vlan-id {{ vlan_cc['native_vlan'] }}
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching interface-mode trunk
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members {{ vlan_cc['native_vlan'] }}
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members external_vlan_{{ vlan_cc['external'] }} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members internal_vlan_{{ vlan_cc['internal'] }} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members storage_vlan_{{ vlan_cc['storage']}} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members storage_mgmt_vlan_{{ vlan_cc['storage_mgmt'] }} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching vlan members tenant_vlan_{{ vlan_cc['tenant']}} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_port_10g3 }} unit 0 family ethernet-switching storm-control default
 {% if dpdkcompute[0]['dpdk_bond_lacp'] == 'True' %}
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_bond_slave1 }} ether-options 802.3ad {{ item.switch_ae_name }}
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_bond_slave2 }} ether-options 802.3ad {{ item.switch_ae_name }}
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_ae_name }} native-vlan-id {{ vlan_cc['native_vlan'] }}
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_ae_name }} aggregated-ether-options link-speed 10g
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_ae_name }} aggregated-ether-options lacp active
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_ae_name }} aggregated-ether-options lacp periodic fast
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_ae_name }} unit 0 family ethernet-switching interface-mode trunk
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_ae_name }} unit 0 family ethernet-switching vlan members {{ vlan_cc['native_vlan'] }}
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_ae_name }} unit 0 family ethernet-switching vlan members tenant_vlan_{{ vlan_cc['tenant'] }} 
-set groups cc-mule-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_ae_name }} unit 0 family ethernet-switching storm-control default
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_bond_slave1 }} ether-options 802.3ad {{ item.switch_ae_name }}
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_bond_slave2 }} ether-options 802.3ad {{ item.switch_ae_name }}
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_ae_name }} native-vlan-id {{ vlan_cc['native_vlan'] }}
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_ae_name }} aggregated-ether-options link-speed 10g
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_ae_name }} aggregated-ether-options lacp active
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_ae_name }} aggregated-ether-options lacp periodic fast
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_ae_name }} unit 0 family ethernet-switching interface-mode trunk
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_ae_name }} unit 0 family ethernet-switching vlan members {{ vlan_cc['native_vlan'] }}
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_ae_name }} unit 0 family ethernet-switching vlan members tenant_vlan_{{ vlan_cc['tenant'] }} 
+set groups cc-{{ vlan_cc['native_vlan'] }} interfaces {{ item.switch_ae_name }} unit 0 family ethernet-switching storm-control default
 {% endif %}
 {% endfor %}
 {% endif %}
